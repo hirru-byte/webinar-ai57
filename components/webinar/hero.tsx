@@ -137,7 +137,7 @@ export default function Hero() {
   }
 
   return (
-    <section id="registration-form" className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white py-20  relative overflow-hidden lg:min-h-screen">
+    <section id="registration-form" className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white py-20  relative overflow-hidden flex flex-col items-center justify-center lg:min-h-screen">
       {/* <WebinarBP /> */}
       <Image src="/hero-bg.jpeg" alt="bg-webinar" width={1000} height={1000} className="absolute top-0 left-0 w-full h-full object-cover object-start opacity-10" />
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-400/20 rounded-full blur-3xl animate-float"></div>
@@ -149,22 +149,22 @@ export default function Hero() {
         {/* Left Side - Event Info */}
         <div className="space-y-8 animate-fadeInLeft">
           <div className="space-y-2">
-            <p className="text-blue-200 font-semibold text-sm uppercase tracking-wider animate-fadeInUp">
+            <p className="text-blue-200 font-semibold text-sm uppercase tracking-wider">
               Thời gian: 16 tháng 1, 2026
             </p>
-            <p className="text-blue-200 font-semibold text-sm uppercase tracking-wider animate-fadeInUp delay-100">
+            <p className="text-blue-200 font-semibold text-sm uppercase tracking-wider delay-100">
               Giờ: 8:00 tối (GMT+7)
             </p>
           </div>
 
-          <div className="space-y-4 animate-fadeInUp delay-200">
+          <div className="space-y-4 delay-200">
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-pretty leading-tight">
               SỰ THẬT VỀ THỊ TRƯỜNG LAO ĐỘNG THỜI AI: CẢNH BÁO 5 NHÓM NGÀNH SẼ "BIẾN MẤT" VÀO NĂM 2030:
               <span className="block text-blue-300">EP01: NGÀNH MARKETING</span>
             </h2>
           </div>
 
-          <div className="space-y-4 animate-fadeInUp delay-300">
+          <div className="space-y-4 delay-300">
             <h3 className="text-white font-bold uppercase tracking-wider">Webinar Bắt Đầu Sau:</h3>
             <div className="flex gap-4">
               {[
@@ -197,7 +197,7 @@ export default function Hero() {
                 control={form.control}
                 name="name"
                 render={({ field }) => (
-                  <FormItem className="animate-fadeInUp delay-100">
+                  <FormItem className="delay-100">
                     <FormLabel className="text-blue-700 text-xs font-semibold">Tên Của Bạn</FormLabel>
                     <FormControl>
                       <Input
@@ -214,7 +214,7 @@ export default function Hero() {
                 control={form.control}
                 name="organization"
                 render={({ field }) => (
-                  <FormItem className="animate-fadeInUp delay-200">
+                  <FormItem className="delay-200">
                     <FormLabel className="text-blue-700 text-xs font-semibold">Đơn vị công tác</FormLabel>
                     <FormControl>
                       <Input
@@ -231,7 +231,7 @@ export default function Hero() {
                 control={form.control}
                 name="role"
                 render={({ field }) => (
-                  <FormItem className="animate-fadeInUp delay-600">
+                  <FormItem className="delay-600">
                     <FormLabel className="text-blue-700 text-xs font-semibold">Bạn là</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
@@ -254,7 +254,7 @@ export default function Hero() {
                 control={form.control}
                 name="phone"
                 render={({ field }) => (
-                  <FormItem className="animate-fadeInUp delay-300">
+                  <FormItem className="delay-300">
                     <FormLabel className="text-blue-700 text-xs font-semibold">Số Điện Thoại</FormLabel>
                     <FormControl>
                       <Input
@@ -271,7 +271,7 @@ export default function Hero() {
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem className="animate-fadeInUp delay-400">
+                  <FormItem className="delay-400">
                     <FormLabel className="text-blue-700 text-xs font-semibold">Email Của Bạn</FormLabel>
                     <FormControl>
                       <Input
@@ -289,7 +289,7 @@ export default function Hero() {
                 control={form.control}
                 name="referralCode"
                 render={({ field }) => (
-                  <FormItem className="animate-fadeInUp delay-500">
+                  <FormItem className="delay-500">
                     <FormLabel className="text-blue-700 text-xs font-semibold mb-1 flex items-center gap-2">
                       <Gift className="w-3 h-3" />
                       Mã Giới Thiệu
@@ -313,7 +313,7 @@ export default function Hero() {
                 control={form.control}
                 name="topic"
                 render={({ field }) => (
-                  <FormItem className="animate-fadeInUp delay-700">
+                  <FormItem className="delay-700">
                     <FormLabel className="text-blue-700 text-xs font-semibold">Chủ đề bạn quan tâm</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
@@ -335,7 +335,7 @@ export default function Hero() {
                 control={form.control}
                 name="question"
                 render={({ field }) => (
-                  <FormItem className="animate-fadeInUp delay-800">
+                  <FormItem className="delay-800">
                     <FormLabel className="text-blue-700 text-xs font-semibold">Câu hỏi của bạn về chủ đề</FormLabel>
                     <FormControl>
                       <Textarea
@@ -352,7 +352,7 @@ export default function Hero() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-gradient-to-r cursor-pointer from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white mt-4 py-4 text-sm font-semibold shadow-lg hover:shadow-blue-500/50 transform hover:scale-[1.02] transition-all duration-300 animate-fadeInUp delay-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r cursor-pointer from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white mt-4 py-4 text-sm font-semibold shadow-lg hover:shadow-blue-500/50 transform hover:scale-[1.02] transition-all duration-300 delay-900 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
