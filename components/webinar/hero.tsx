@@ -137,8 +137,8 @@ export default function Hero() {
   }
 
   return (
-    <section id="registration-form"  className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white py-20  relative overflow-hidden">
-      <WebinarBP />
+    <section id="registration-form" className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white py-20  relative overflow-hidden lg:min-h-screen">
+      {/* <WebinarBP /> */}
       <Image src="/hero-bg.jpeg" alt="bg-webinar" width={1000} height={1000} className="absolute top-0 left-0 w-full h-full object-cover object-start opacity-10" />
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-400/20 rounded-full blur-3xl animate-float"></div>
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/10 rounded-full blur-3xl animate-float delay-500"></div>
@@ -159,7 +159,7 @@ export default function Hero() {
 
           <div className="space-y-4 animate-fadeInUp delay-200">
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-pretty leading-tight">
-            SỰ THẬT VỀ THỊ TRƯỜNG LAO ĐỘNG THỜI AI: CẢNH BÁO 5 NHÓM NGÀNH SẼ "BIẾN MẤT" VÀO NĂM 2030: 
+              SỰ THẬT VỀ THỊ TRƯỜNG LAO ĐỘNG THỜI AI: CẢNH BÁO 5 NHÓM NGÀNH SẼ "BIẾN MẤT" VÀO NĂM 2030:
               <span className="block text-blue-300">EP01: NGÀNH MARKETING</span>
             </h2>
           </div>
@@ -186,7 +186,7 @@ export default function Hero() {
         </div>
 
         {/* Right Side - Registration Form */}
-        <div  className="max-w-lg w-full bg-white/95 backdrop-blur-md border-l-4 border-blue-500 p-5 rounded-xl shadow-2xl animate-fadeInRight hover:shadow-blue-500/30 transition-all duration-500 hover-lift">
+        <div className="max-w-lg w-full bg-white/95 backdrop-blur-md border-l-4 border-blue-500 p-5 rounded-xl shadow-2xl animate-fadeInRight hover:shadow-blue-500/30 transition-all duration-500 hover-lift">
           <div className="text-center mb-4">
             <h3 className="text-blue-900 font-bold text-xl mb-1">Đăng Ký Tham Gia</h3>
             <p className="text-blue-600 text-xs">Điền thông tin để nhận vé miễn phí</p>
@@ -227,7 +227,7 @@ export default function Hero() {
                   </FormItem>
                 )}
               />
-               <FormField
+              <FormField
                 control={form.control}
                 name="role"
                 render={({ field }) => (
@@ -308,7 +308,7 @@ export default function Hero() {
                   </FormItem>
                 )}
               />
-             
+
               <FormField
                 control={form.control}
                 name="topic"
@@ -348,7 +348,7 @@ export default function Hero() {
                   </FormItem>
                 )}
               />
-              
+
               <Button
                 type="submit"
                 disabled={isSubmitting}

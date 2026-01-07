@@ -4,6 +4,8 @@ import { useState } from "react"
 import { format } from "date-fns"
 import { Calendar, Video, User, FileText, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
+import AvatarComponent from "../common/avatar"
+import Image from "next/image"
 
 interface WebinarItem {
   id: string
@@ -26,7 +28,7 @@ const webinarData: WebinarItem[] = [
     id: "1",
     date: new Date("2026-01-16"),
     title: `Webinar: “SỰ THẬT VỀ THỊ TRƯỜNG LAO ĐỘNG THỜI AI: CẢNH BÁO NHÓM NGÀNH SẼ "BIẾN MẤT" VÀO NĂM 2030 - EP 1: ngành Marketing  (16/01)”`,
-    isCompleted: false, 
+    isCompleted: false,
     isComingSoon: false,
     dateTime: "20:00 | Thứ Sáu, Ngày 16 tháng 01 năm 2026",
     format: "Webinar",
@@ -100,7 +102,7 @@ const webinarData: WebinarItem[] = [
     },
     targetAudience: "Học sinh Trung học Phổ Thông quan tâm tìm hiểu và dự định ứng tuyển",
   },
- 
+
 ]
 
 const ListSchedule = () => {
@@ -109,95 +111,84 @@ const ListSchedule = () => {
   )
 
   return (
-    <section className="w-full py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white via-blue-50 to-blue-100">
-      <div className="max-w-7xl mx-auto">
+    <section className="w-full py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white via-blue-50 to-blue-100 relative">
+      <Image src="/white-bg.jpg" alt="webinar-bg" width={1000} height={1000} className="w-full h-full object-cover absolute top-0 left-0 z-10" />
+      <div className="max-w-7xl mx-auto z-20 relative">
         <div className="mb-8">
-          <h2 className="text-3xl lg:text-4xl font-bold text-blue-900 mb-2">
-            THAM KHẢO NGAY LỊCH TRÌNH CHUỖI WEBINAR CỦA HONGLINHEDUCATION
+          <h2 className="text-3xl lg:text-4xl font-bold mb-2 text-center leading-tight">
+            THAM KHẢO NGAY <span className="text-blue-600">LỊCH TRÌNH CHUỖI WEBINAR</span> CỦA HONGLINHEDUCATION
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 ">
           {/* Left Side - List of Webinars */}
-          <div className="space-y-4">
-            {webinarData.map((webinar) => (
-              <button
-                key={webinar.id}
-                onClick={() => setSelectedWebinar(webinar)}
-                className={cn(
-                  "w-full text-left p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer",
-                  "hover:shadow-lg hover:scale-[1.02]",
-                  selectedWebinar?.id === webinar.id
-                    ? "bg-blue-600 border-blue-700 text-white shadow-lg"
-                    : webinar.isCompleted
-                      ? "bg-white border-gray-300 text-gray-700 hover:border-blue-400"
-                      : "bg-white border-blue-500 text-gray-900 hover:border-blue-600"
-                )}
-              >
-                <div className="flex items-start gap-3">
-                  <Calendar
+          <div className="space-y-4 relative">
+
+            {webinarData.map((webinar, index) => (
+              (
+                <div key={webinar.id} className="flex items-center justify-end gap-4 relative">
+                  <div className="flex items-center justify-end gap-2 min-w-[100px] ">
+                    <span className="text-sm">
+                      {format(webinar.date, "dd/MM/yyyy")}
+                    </span>
+                    <Calendar className="w-6 h-6 text-blue-600 mt-0.5 shrink-0 fill-white" />
+
+                  </div>
+                  {index !== webinarData.length - 1 && (
+                    <div className="absolute left-12 top-26 w-[80px] border border-dashed border-gray-300 rotate-90" />
+                  )}
+                  <button
+                    onClick={() => setSelectedWebinar(webinar)}
                     className={cn(
-                      "w-5 h-5 mt-0.5 shrink-0",
-                      selectedWebinar?.id === webinar.id ? "text-white" : "text-blue-600"
+                      "w-full text-left p-3 h-24 rounded-lg border-2 transition-all duration-300 cursor-pointer",
+                      "hover:shadow-lg hover:scale-[1.02]",
+                      selectedWebinar?.id === webinar.id
+                        ? "bg-blue-600 border-blue-700 text-white shadow-lg"
+                        : webinar.isCompleted
+                          ? "bg-white border-gray-300 text-gray-700 hover:border-blue-400"
+                          : "bg-white border-blue-500 text-gray-900 hover:border-blue-600"
                     )}
-                  />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-sm font-semibold">
-                        {format(webinar.date, "dd/MM/yyyy")}
-                      </span>
-                      {webinar.isCompleted && (
-                        <span
+                  >
+                    <div className="flex items-start gap-3">
+
+                      <div className="flex-1 min-w-0">
+
+                        <p
                           className={cn(
-                            "text-xs px-2 py-0.5 rounded",
-                            selectedWebinar?.id === webinar.id
-                              ? "bg-white/20 text-white"
-                              : "bg-gray-200 text-gray-600"
+                            "text-sm font-medium leading-snug",
+                            selectedWebinar?.id === webinar.id ? "text-white" : "text-gray-900"
                           )}
                         >
-                          (Sự kiện đã kết thúc)
-                        </span>
-                      )}
+                          {webinar.title}
+                        </p>
+                      </div>
                     </div>
-                    <p
-                      className={cn(
-                        "text-sm font-medium leading-snug",
-                        selectedWebinar?.id === webinar.id ? "text-white" : "text-gray-900"
-                      )}
-                    >
-                      {webinar.title}
-                    </p>
-                  </div>
+                  </button>
                 </div>
-              </button>
+              )
             ))}
           </div>
 
           {/* Right Side - Webinar Details */}
-          <div className="lg:sticky lg:top-8 lg:h-fit">
+          <div className="lg:sticky lg:top-8 lg:h-fit relative overflow-hidden">
+            <Image src="/white-caro-bg.svg" alt="webinar-bg" width={1000} height={1000} className="w-full h-full object-cover opacity-10 absolute top-0 left-0 z-10" />
             {selectedWebinar && (
-              <div className="bg-white border-2 border-blue-600 rounded-lg p-6 shadow-lg">
+              <div className=" border-2 border-blue-600 rounded-lg p-6 shadow-lg relative z-20">
                 {selectedWebinar.id === "1" ? (
                   <>
-                    <h3 className="text-xl font-bold text-gray-900 mb-6">{selectedWebinar.title}</h3>
-
                     <div className="space-y-4">
                       {/* Date & Time */}
                       <div className="flex items-start gap-3">
                         <Calendar className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
-                        <div>
-                          <p className="text-sm font-semibold text-gray-700 mb-1">Ngày & giờ:</p>
-                          <p className="text-sm text-gray-600">{selectedWebinar.dateTime}</p>
-                        </div>
+                        <p className="text-sm font-semibold text-gray-700 mb-1">Ngày & giờ:</p>
+                        <p className="text-sm text-gray-600">{selectedWebinar.dateTime}</p>
                       </div>
 
                       {/* Format */}
                       <div className="flex items-start gap-3">
                         <Video className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
-                        <div>
-                          <p className="text-sm font-semibold text-gray-700 mb-1">Hình thức:</p>
-                          <p className="text-sm text-gray-600">{selectedWebinar.format}</p>
-                        </div>
+                        <p className="text-sm font-semibold text-gray-700 mb-1">Hình thức:</p>
+                        <p className="text-sm text-gray-600">{selectedWebinar.format}</p>
                       </div>
 
                       {/* Speaker */}
@@ -205,7 +196,11 @@ const ListSchedule = () => {
                         <User className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
                         <div>
                           <p className="text-sm font-semibold text-gray-700 mb-1">Diễn giả:</p>
-                          <p className="text-sm text-gray-600">{selectedWebinar.speaker}</p>
+                          <AvatarComponent
+                            name={selectedWebinar.speaker}
+                            description="Admin group 'Bình dân học AI'"
+                            imageSrc="/tml.png"
+                          />
                         </div>
                       </div>
 
