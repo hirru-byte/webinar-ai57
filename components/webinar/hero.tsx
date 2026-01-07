@@ -2,9 +2,41 @@
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Gift } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormDescription,
+} from "@/components/ui/form"
+import { Gift, Loader2 } from "lucide-react"
 import { useState, useEffect, useMemo } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import { useToast } from "@/hooks/use-toast"
 import WebinarBP from "../common/webinar-bp"
+
+const formSchema = z.object({
+  name: z.string().min(2, "Tên phải có ít nhất 2 ký tự"),
+  organization: z.string().min(2, "Đơn vị công tác phải có ít nhất 2 ký tự"),
+  phone: z.string().min(10, "Số điện thoại không hợp lệ").regex(/^[0-9+\-\s()]+$/, "Số điện thoại chỉ được chứa số và ký tự đặc biệt"),
+  email: z.string().email("Email không hợp lệ"),
+  referralCode: z.string().optional(),
+  role: z.string().min(1, "Vui lòng chọn bạn là ai"),
+  topic: z.string().min(1, "Vui lòng chọn chủ đề bạn quan tâm"),
+  question: z.string().optional(),
+})
 
 function useCountdown(targetDate: Date) {
   const [timeLeft, setTimeLeft] = useState({
@@ -47,20 +79,71 @@ export default function Hero() {
   const webinarDate = useMemo(() => new Date("2026-01-16T13:00:00Z"), [])
   const timeLeft = useCountdown(webinarDate)
   const [mounted, setMounted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { toast } = useToast()
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      organization: "",
+      phone: "",
+      email: "",
+      referralCode: "",
+      role: "",
+      topic: "",
+      question: "",
+    },
+  })
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true)
+    try {
+      const response = await fetch("/api/submit-form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Có lỗi xảy ra khi gửi form")
+      }
+
+      toast({
+        title: "Đăng ký thành công!",
+        description: "Cảm ơn bạn đã đăng ký. Chúng tôi sẽ liên hệ với bạn sớm nhất.",
+      })
+
+      form.reset()
+    } catch (error) {
+      console.error("Error submitting form:", error)
+      toast({
+        title: "Đăng ký thất bại",
+        description: error instanceof Error ? error.message : "Có lỗi xảy ra. Vui lòng thử lại sau.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
-    <section className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white py-20 px-4 relative overflow-hidden">
+    <section id="registration-form"  className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white py-20  relative overflow-hidden">
       <WebinarBP />
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-400/20 rounded-full blur-3xl animate-float"></div>
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/10 rounded-full blur-3xl animate-float delay-500"></div>
       <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl animate-bounce-soft"></div>
       <div className="absolute top-1/4 right-1/4 w-24 h-24 border border-white/20 rounded-full animate-rotate-slow"></div>
 
-      <div className="max-w-8xl  grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+      <div className="max-w-8xl px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
         {/* Left Side - Event Info */}
         <div className="space-y-8 animate-fadeInLeft">
           <div className="space-y-2">
@@ -101,56 +184,185 @@ export default function Hero() {
         </div>
 
         {/* Right Side - Registration Form */}
-        <div className="bg-white/95 backdrop-blur-md border-l-4 border-blue-500 p-5 rounded-xl shadow-2xl animate-fadeInRight hover:shadow-blue-500/30 transition-all duration-500 hover-lift">
+        <div  className="bg-white/95 backdrop-blur-md border-l-4 border-blue-500 p-5 rounded-xl shadow-2xl animate-fadeInRight hover:shadow-blue-500/30 transition-all duration-500 hover-lift">
           <div className="text-center mb-4">
             <h3 className="text-blue-900 font-bold text-xl mb-1">Đăng Ký Tham Gia</h3>
             <p className="text-blue-600 text-xs">Điền thông tin để nhận vé miễn phí</p>
           </div>
-          <form className="space-y-3">
-            <div className="animate-fadeInUp delay-100">
-              <label className="text-blue-700 text-xs font-semibold block mb-1">Tên Của Bạn</label>
-              <Input
-                placeholder="Nhập tên của bạn"
-                className="bg-blue-50 text-blue-900 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 h-9 text-sm"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="animate-fadeInUp delay-100">
+                    <FormLabel className="text-blue-700 text-xs font-semibold">Tên Của Bạn</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Nhập tên của bạn"
+                        className="bg-blue-50 text-blue-900 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 h-9 text-sm"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="animate-fadeInUp delay-200">
-              <label className="text-blue-700 text-xs font-semibold block mb-1">Tên Công Ty</label>
-              <Input
-                placeholder="Nhập tên công ty"
-                className="bg-blue-50 text-blue-900 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 h-9 text-sm"
+              <FormField
+                control={form.control}
+                name="organization"
+                render={({ field }) => (
+                  <FormItem className="animate-fadeInUp delay-200">
+                    <FormLabel className="text-blue-700 text-xs font-semibold">Đơn vị công tác</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Nhập đơn vị công tác"
+                        className="bg-blue-50 text-blue-900 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 h-9 text-sm"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="animate-fadeInUp delay-300">
-              <label className="text-blue-700 text-xs font-semibold block mb-1">Số Điện Thoại</label>
-              <Input
-                placeholder="Nhập số điện thoại"
-                className="bg-blue-50 text-blue-900 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 h-9 text-sm"
+               <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem className="animate-fadeInUp delay-600">
+                    <FormLabel className="text-blue-700 text-xs font-semibold">Bạn là</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full bg-blue-50 text-blue-900 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 h-9 text-sm">
+                          <SelectValue placeholder="Bạn đang làm gì?" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="hoc-sinh">Học sinh</SelectItem>
+                        <SelectItem value="sinh-vien">Sinh viên</SelectItem>
+                        <SelectItem value="phu-huynh">Phụ huynh</SelectItem>
+                        <SelectItem value="da-di-lam">Đã đi làm</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="animate-fadeInUp delay-400">
-              <label className="text-blue-700 text-xs font-semibold block mb-1">Email Của Bạn</label>
-              <Input
-                type="email"
-                placeholder="Nhập email của bạn"
-                className="bg-blue-50 text-blue-900 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 h-9 text-sm"
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem className="animate-fadeInUp delay-300">
+                    <FormLabel className="text-blue-700 text-xs font-semibold">Số Điện Thoại</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Nhập số điện thoại"
+                        className="bg-blue-50 text-blue-900 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 h-9 text-sm"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="animate-fadeInUp delay-500">
-              <label className="text-blue-700 text-xs font-semibold mb-1 flex items-center gap-2">
-                <Gift className="w-3 h-3" />
-                Mã Giới Thiệu
-              </label>
-              <Input
-                placeholder="Nhập mã giới thiệu (nếu có)"
-                className="bg-blue-50 text-blue-900 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 h-9 text-sm"
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="animate-fadeInUp delay-400">
+                    <FormLabel className="text-blue-700 text-xs font-semibold">Email Của Bạn</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="Nhập email của bạn"
+                        className="bg-blue-50 text-blue-900 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 h-9 text-sm"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
               />
-              <p className="text-xs text-blue-500 mt-0.5">Nhập mã để nhận ưu đãi đặc biệt</p>
-            </div>
-            <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white mt-4 py-4 text-sm font-semibold shadow-lg hover:shadow-blue-500/50 transform hover:scale-[1.02] transition-all duration-300 animate-fadeInUp delay-600">
-              Đăng Ký Ngay
-            </Button>
-          </form>
+              <FormField
+                control={form.control}
+                name="referralCode"
+                render={({ field }) => (
+                  <FormItem className="animate-fadeInUp delay-500">
+                    <FormLabel className="text-blue-700 text-xs font-semibold mb-1 flex items-center gap-2">
+                      <Gift className="w-3 h-3" />
+                      Mã Giới Thiệu
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Nhập mã giới thiệu (nếu có)"
+                        className="bg-blue-50 text-blue-900 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 h-9 text-sm"
+                        {...field}
+                      />
+                    </FormControl>
+                    {/* <FormDescription className="text-xs text-blue-500 mt-0.5">
+                      Nhập mã để nhận ưu đãi đặc biệt
+                    </FormDescription> */}
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
+             
+              <FormField
+                control={form.control}
+                name="topic"
+                render={({ field }) => (
+                  <FormItem className="animate-fadeInUp delay-700">
+                    <FormLabel className="text-blue-700 text-xs font-semibold">Chủ đề bạn quan tâm</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full bg-blue-50 text-blue-900 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 h-9 text-sm">
+                          <SelectValue placeholder="Bạn quan tâm đến chủ đề nào?" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="webinar-23-1">Webinar: Cách tư duy chiến lược, xây dựng kế hoạch marketing với AI (23/1)</SelectItem>
+                        <SelectItem value="webinar-30-1">Webinar: Lộ trình học marketing mới trong kỷ nguyên AI (30/1)</SelectItem>
+                        <SelectItem value="nganh-nghe-bien-mat">Các nhóm ngành nghề sẽ biến mất trong kỷ nguyên AI trước năm 2030.</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="question"
+                render={({ field }) => (
+                  <FormItem className="animate-fadeInUp delay-800">
+                    <FormLabel className="text-blue-700 text-xs font-semibold">Câu hỏi của bạn về chủ đề</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Nhập câu hỏi của bạn về chủ đề bạn quan tâm"
+                        className="bg-blue-50 text-blue-900 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 text-sm min-h-20"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
+              
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white mt-4 py-4 text-sm font-semibold shadow-lg hover:shadow-blue-500/50 transform hover:scale-[1.02] transition-all duration-300 animate-fadeInUp delay-900 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Đang gửi...
+                  </>
+                ) : (
+                  "Đăng Ký Ngay"
+                )}
+              </Button>
+            </form>
+          </Form>
         </div>
       </div>
     </section>

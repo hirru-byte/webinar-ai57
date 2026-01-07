@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import { format, isToday } from 'date-fns'
+import { Calendar } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -11,12 +12,15 @@ import {
 } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 import { DayItem, generateMockData } from '@/mocks/web-mock'
+import { vi } from 'date-fns/locale'
 
 const WebinarBP = () => {
   const [selectedDay, setSelectedDay] = React.useState<DayItem | null>(null)
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const days = React.useMemo(() => generateMockData(), [])
   const today = new Date()
+  // Get the month from the first day item (which represents the month being displayed)
+  const displayMonth = days.length > 0 ? days[0].date : today
 
   // Drag to scroll state
   const scrollContainerRef = React.useRef<HTMLDivElement>(null)
@@ -167,23 +171,29 @@ const WebinarBP = () => {
   }, [])
 
   return (
-    <div className="w-full py-8 px-4 sm:px-6 lg:px-8">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-foreground mb-2">
-          Weekly Schedule View
+    <div className="w-full pb-8 z-50 relative">
+      <div className="mb-6 px-4 sm:px-6 lg:px-8">
+        <h2 className="text-2xl font-bold text-foreground mb-2 text-white">
+          Các sự kiện webinar trong {format(displayMonth, 'MMMM yyyy', { locale: vi })}
         </h2>
         <p className="text-muted-foreground text-sm">
-          Scroll horizontally to view all days in {format(today, 'MMMM yyyy')}
+          Kéo ngang để xem tất cả các sự kiện trong {format(displayMonth, 'MMMM yyyy', { locale: vi })}
         </p>
       </div>
 
       {/* Horizontal scrollable container */}
       <div className="relative">
+        {/* Fade overlays - left side */}
+        <div className="absolute left-0 top-0 bottom-4 w-24 bg-gradient-to-r from-blue-900/50 to-transparent pointer-events-none z-10" />
+        
+        {/* Fade overlays - right side */}
+        <div className="absolute right-0 top-0 bottom-4 w-16 bg-gradient-to-l from-blue-700/50 to-transparent pointer-events-none z-10" />
+        
         {/* Scrollable list */}
         <div
           ref={scrollContainerRef}
           className={cn(
-            'overflow-x-auto scrollbar-hide pb-4 select-none',
+            'overflow-x-auto scrollbar-hide pb-4 select-none px-4',
             'scroll-smooth',
             isDragging ? 'cursor-grabbing' : 'cursor-grab',
             'active:cursor-grabbing'
@@ -199,7 +209,7 @@ const WebinarBP = () => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <div className="flex gap-4 min-w-max">
+          <div className="flex gap-4 min-w-max py-6">
             {days.map((day, index) => {
               const isCurrentDay = isToday(day.date)
               const hasEvent = day.type !== '' && day.category !== ''
@@ -221,32 +231,34 @@ const WebinarBP = () => {
                   <button
                     onClick={() => hasEvent && handleDayClick(day)}
                     className={cn(
-                      'w-full h-48 rounded-lg border-2 transition-all duration-300',
+                      'w-full h-32 rounded-lg border-2 transition-all duration-300',
                       'flex flex-col items-center justify-center p-4',
                       'relative overflow-hidden',
                       isDragging ? 'cursor-grabbing' : hasEvent ? 'cursor-pointer hover:shadow-lg hover:scale-105' : 'cursor-default',
                       // Color scheme:
-                      // - Current day with event: blue (cyan)
-                      // - Current day without event: gray
-                      // - Day with event: white
+                      // - Current day with event: vibrant cyan/blue gradient
+                      // - Current day without event: muted gray with border
+                      // - Day with event: light cyan background with colored border
                       // - Day without event: gray
                       isCurrentDay && hasEvent
-                        ? 'bg-cyan-500 border-cyan-600 text-white shadow-lg ring-2 ring-cyan-300 ring-offset-2'
-                        : hasEvent
-                          ? 'bg-white border-border hover:border-cyan-500 text-card-foreground'
-                          : 'bg-gray-200 border-gray-300 text-gray-600'
+                        ? 'bg-gradient-to-br from-cyan-500 via-blue-500 to-blue-600 border-blue-400 text-white shadow-2xl ring-4 ring-blue-400/50 ring-offset-2'
+                        : isCurrentDay
+                          ? 'bg-gray-300 border-2 border-gray-400 text-gray-700 shadow-md'
+                          : hasEvent
+                            ? 'bg-gradient-to-br from-blue-200 to-blue-300 border-2 border-blue-400 hover:border-blue-500 text-card-foreground shadow-md'
+                            : 'bg-gray-200 border-gray-300 text-gray-600'
                     )}
                   >
                     {/* Current day indicator */}
                     {isCurrentDay && (
-                      <div className="absolute top-2 right-2">
+                      <div className="absolute top-2 right-2 z-10">
                         <span className={cn(
-                          'text-xs font-bold px-2 py-1 rounded-full',
+                          'text-xs font-bold px-2.5 py-1 rounded-full shadow-lg',
                           hasEvent 
-                            ? 'bg-white text-cyan-600' 
-                            : 'bg-gray-400 text-white'
+                            ? 'bg-white text-blue-600 border-blue-400' 
+                            : 'bg-white text-gray-700 border-gray-600'
                         )}>
-                          Today
+                          Hôm nay
                         </span>
                       </div>
                     )}
@@ -259,20 +271,24 @@ const WebinarBP = () => {
                       <div className={cn(
                         'text-xs font-semibold mb-1',
                         isCurrentDay && hasEvent
-                          ? 'text-white/80'
-                          : hasEvent
-                            ? 'text-muted-foreground'
-                            : 'text-gray-500'
+                          ? 'text-white/90'
+                          : isCurrentDay
+                            ? 'text-gray-700'
+                            : hasEvent
+                              ? 'text-blue-700'
+                              : 'text-gray-500'
                       )}>
-                        {format(day.date, 'EEE')}
+                        {format(day.date, 'EEE', { locale: vi })}
                       </div>
                       <div className={cn(
                         'text-2xl font-bold mb-2',
                         isCurrentDay && hasEvent 
                           ? 'text-white' 
-                          : hasEvent 
-                            ? 'text-foreground' 
-                            : 'text-gray-600'
+                          : isCurrentDay
+                            ? 'text-gray-800'
+                            : hasEvent 
+                              ? 'text-blue-800' 
+                              : 'text-gray-600'
                       )}>
                         {format(day.date, 'd')}
                       </div>
@@ -281,31 +297,31 @@ const WebinarBP = () => {
                           <div className={cn(
                             'text-xs font-medium mb-1 px-2 py-1 rounded',
                             isCurrentDay 
-                              ? 'bg-white/20 text-white' 
-                              : 'bg-cyan-100 text-cyan-700'
+                              ? 'bg-white/30 text-white border border-white/20' 
+                              : 'bg-blue-500 text-white font-semibold'
                           )}>
                             {day.type}
                           </div>
                           <div className={cn(
-                            'text-xs truncate w-full mt-1',
+                            'text-xs truncate w-full mt-1 font-medium',
                             isCurrentDay && hasEvent 
-                              ? 'text-white/90' 
-                              : 'text-muted-foreground'
+                              ? 'text-white' 
+                              : 'text-blue-900'
                           )}>
                             {day.title}
                           </div>
-                          <div className={cn(
+                          {/* <div className={cn(
                             'text-xs mt-2',
                             isCurrentDay && hasEvent 
-                              ? 'text-white/80' 
-                              : 'text-muted-foreground'
+                              ? 'text-white/90' 
+                              : 'text-cyan-800'
                           )}>
                             {day.instructor}
-                          </div>
+                          </div> */}
                         </>
                       ) : (
                         <div className="text-xs mt-2 text-gray-500">
-                          No event
+                          Không có sự kiện
                         </div>
                       )}
                     </div>
@@ -317,9 +333,9 @@ const WebinarBP = () => {
                           'text-sm font-semibold px-2',
                           isCurrentDay && hasEvent 
                             ? 'text-white' 
-                            : 'text-foreground'
+                            : 'text-blue-900'
                         )}>
-                          {day.title}
+                          {day.title.length > 30 ? day.title.slice(0, 50) + '...' : day.title}
                         </div>
                       </div>
                     )}
@@ -329,10 +345,6 @@ const WebinarBP = () => {
             })}
           </div>
         </div>
-
-        {/* Scroll indicators (optional visual cues) */}
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-8 h-16 bg-gradient-to-r from-background to-transparent pointer-events-none opacity-0 sm:opacity-100" />
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-16 bg-gradient-to-l from-background to-transparent pointer-events-none opacity-0 sm:opacity-100" />
       </div>
 
       {/* Detail Dialog/Modal */}
@@ -349,62 +361,75 @@ const WebinarBP = () => {
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="space-y-6 mt-4">
-                {/* Type and Category */}
-                {selectedDay.type && selectedDay.category && (
-                  <div className="flex flex-wrap gap-3">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-cyan-100 text-cyan-700">
-                      {selectedDay.type}
-                    </span>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700">
-                      {selectedDay.category}
-                    </span>
+              {selectedDay.isComingSoon ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                    <Calendar className="w-10 h-10 text-blue-600" />
                   </div>
-                )}
-
-                {/* Description */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Description</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {selectedDay.description}
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{selectedDay.title}</h3>
+                  <p className="text-lg font-semibold text-blue-600 mb-4">Sắp ra mắt</p>
+                  <p className="text-sm text-gray-600">
+                    Thông tin chi tiết về webinar này sẽ sớm được cập nhật. Vui lòng quay lại sau!
                   </p>
                 </div>
+              ) : (
+                <div className="space-y-6 mt-4">
+                  {/* Type and Category */}
+                  {selectedDay.type && selectedDay.category && (
+                    <div className="flex flex-wrap gap-3">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-cyan-100 text-cyan-700">
+                        {selectedDay.type}
+                      </span>
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700">
+                        {selectedDay.category}
+                      </span>
+                    </div>
+                  )}
 
-                {/* Activities */}
-                {selectedDay.activities.length > 0 && (
+                  {/* Description */}
                   <div>
-                    <h3 className="text-lg font-semibold mb-2">Activities</h3>
-                    <ul className="space-y-2">
-                      {selectedDay.activities.map((activity, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <span className="text-cyan-500 mt-1">•</span>
-                          <span className="text-muted-foreground">{activity}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Preparation */}
-                {selectedDay.preparation && (
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Preparation</h3>
+                    <h3 className="text-lg font-semibold mb-2">Description</h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      {selectedDay.preparation}
+                      {selectedDay.description}
                     </p>
                   </div>
-                )}
 
-                {/* Instructor */}
-                {selectedDay.instructor && (
-                  <div className="pt-4 border-t">
-                    <h3 className="text-lg font-semibold mb-2">Instructor</h3>
-                    <p className="text-foreground font-medium">
-                      {selectedDay.instructor}
-                    </p>
-                  </div>
-                )}
-              </div>
+                  {/* Activities */}
+                  {selectedDay.activities.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Activities</h3>
+                      <ul className="space-y-2">
+                        {selectedDay.activities.map((activity, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-cyan-500 mt-1">•</span>
+                            <span className="text-muted-foreground">{activity}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Preparation */}
+                  {selectedDay.preparation && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Preparation</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {selectedDay.preparation}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Instructor */}
+                  {selectedDay.instructor && (
+                    <div className="pt-4 border-t">
+                      <h3 className="text-lg font-semibold mb-2">Instructor</h3>
+                      <p className="text-foreground font-medium">
+                        {selectedDay.instructor}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </>
           )}
         </DialogContent>
