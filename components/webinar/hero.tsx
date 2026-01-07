@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Gift } from "lucide-react"
 import { useState, useEffect, useMemo } from "react"
+import WebinarBP from "../common/webinar-bp"
 
 function useCountdown(targetDate: Date) {
   const [timeLeft, setTimeLeft] = useState({
@@ -53,6 +54,7 @@ export default function Hero() {
 
   return (
     <section className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white py-20 px-4 relative overflow-hidden">
+      <WebinarBP />
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-400/20 rounded-full blur-3xl animate-float"></div>
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/10 rounded-full blur-3xl animate-float delay-500"></div>
       <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl animate-bounce-soft"></div>
