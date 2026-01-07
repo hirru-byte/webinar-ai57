@@ -30,7 +30,7 @@ const webinarData: WebinarItem[] = [
     isComingSoon: false,
     dateTime: "20:00 | Thứ Sáu, Ngày 16 tháng 01 năm 2026",
     format: "Webinar",
-    speaker: "Thông tin đang được cập nhật",
+    speaker: "Lê Thanh Hưng",
     mainContent: {
       title: "Nội dung chính",
       items: [
@@ -114,7 +114,7 @@ const ListSchedule = () => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h2 className="text-3xl lg:text-4xl font-bold text-blue-900 mb-2">
-            THAM KHẢO NGAY LỊCH TRÌNH CHUỖI WEBINAR CỦA HONGLINGEDU
+            THAM KHẢO NGAY LỊCH TRÌNH CHUỖI WEBINAR CỦA HONGLINHEDUCATION
           </h2>
         </div>
 
