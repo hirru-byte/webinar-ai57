@@ -145,7 +145,7 @@ export default function Hero() {
       <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl animate-bounce-soft"></div>
       <div className="absolute top-1/4 right-1/4 w-24 h-24 border border-white/20 rounded-full animate-rotate-slow"></div>
 
-      <div className="container mx-auto px-4 flex flex-col lg:flex-row gap-6 items-center relative z-10">
+      <div className="container mx-auto px-12 flex flex-col lg:flex-row gap-6 items-center relative z-10">
         {/* Left Side - Event Info */}
         <div className="space-y-8 animate-fadeInLeft">
           <div className="space-y-2">
@@ -158,7 +158,7 @@ export default function Hero() {
           </div>
 
           <div className="space-y-4 animate-fadeInUp delay-200">
-            <h2 className="text-5xl lg:text-6xl font-bold text-pretty leading-tight">
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-pretty leading-tight">
             SỰ THẬT VỀ THỊ TRƯỜNG LAO ĐỘNG THỜI AI: CẢNH BÁO 5 NHÓM NGÀNH SẼ "BIẾN MẤT" VÀO NĂM 2030: 
               <span className="block text-blue-300">EP01: NGÀNH MARKETING</span>
             </h2>
@@ -186,7 +186,7 @@ export default function Hero() {
         </div>
 
         {/* Right Side - Registration Form */}
-        <div  className="min-w-lg bg-white/95 backdrop-blur-md border-l-4 border-blue-500 p-5 rounded-xl shadow-2xl animate-fadeInRight hover:shadow-blue-500/30 transition-all duration-500 hover-lift">
+        <div  className="max-w-lg w-full bg-white/95 backdrop-blur-md border-l-4 border-blue-500 p-5 rounded-xl shadow-2xl animate-fadeInRight hover:shadow-blue-500/30 transition-all duration-500 hover-lift">
           <div className="text-center mb-4">
             <h3 className="text-blue-900 font-bold text-xl mb-1">Đăng Ký Tham Gia</h3>
             <p className="text-blue-600 text-xs">Điền thông tin để nhận vé miễn phí</p>
@@ -318,7 +318,7 @@ export default function Hero() {
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full bg-blue-50 text-blue-900 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 h-9 text-sm">
-                          <SelectValue placeholder="Bạn quan tâm đến chủ đề nào?" />
+                          <SelectValue placeholder="Chọn chủ đề" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

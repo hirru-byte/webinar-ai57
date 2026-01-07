@@ -25,7 +25,7 @@ const webinarData: WebinarItem[] = [
   {
     id: "1",
     date: new Date("2026-01-16"),
-    title: `Webinar: “SỰ THẬT VỀ THỊ TRƯỜNG LAO ĐỘNG THỜI AI: CẢNH BÁO NHÓM NGÀNH SẼ "BIẾN MẤT" VÀO NĂM 2030”`,
+    title: `Webinar: “SỰ THẬT VỀ THỊ TRƯỜNG LAO ĐỘNG THỜI AI: CẢNH BÁO NHÓM NGÀNH SẼ "BIẾN MẤT" VÀO NĂM 2030 - EP 1: ngành Marketing  (16/01)”`,
     isCompleted: false, 
     isComingSoon: false,
     dateTime: "20:00 | Thứ Sáu, Ngày 16 tháng 01 năm 2026",
@@ -84,8 +84,7 @@ const webinarData: WebinarItem[] = [
   {
     id: "4",
     date: new Date("2026-02-07"),
-    title: `Webinar: “SỰ THẬT VỀ THỊ TRƯỜNG LAO ĐỘNG THỜI AI: CẢNH BÁO NHÓM NGÀNH SẼ "BIẾN MẤT" VÀO NĂM 2030”
-EP 2: Tài chính & Kế toán  (07/02)`,
+    title: `Webinar: “SỰ THẬT VỀ THỊ TRƯỜNG LAO ĐỘNG THỜI AI: CẢNH BÁO NHÓM NGÀNH SẼ "BIẾN MẤT" VÀO NĂM 2030 - EP 2: Tài chính & Kế toán  (07/02)`,
     isCompleted: false,
     isComingSoon: true,
     dateTime: "19:45 | Thứ Năm, Ngày 07 tháng 02 năm 2026",

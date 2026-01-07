@@ -13,7 +13,7 @@ export default function Home() {
       {/* <Header /> */}
       <Hero />
       <ListSchedule />
-      <Benefits />
+      {/* <Benefits /> */}
       <Speaker />
       {/* <Schedule /> */}
       <CTA />

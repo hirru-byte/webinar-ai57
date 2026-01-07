@@ -342,7 +342,7 @@ const WebinarBP = () => {
                     {isCurrentDay && (
                       <div className="absolute -top-4 right-1/2 transform translate-x-1/2 z-40">
                         <span className={cn(
-                          'text-xs font-bold px-2.5 py-1 rounded-full shadow-lg',
+                          'text-xs text-nowrap font-bold px-2.5 py-1 rounded-full shadow-lg',
                           hasEvent 
                             ? 'bg-white text-blue-600 border-blue-400' 
                             : 'bg-white text-gray-700 border-gray-600'
