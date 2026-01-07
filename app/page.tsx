@@ -15,9 +15,9 @@ export default function Home() {
       <ListSchedule />
       <Benefits />
       <Speaker />
-      <Schedule />
+      {/* <Schedule /> */}
       <CTA />
-      <Footer />
+      {/* <Footer /> */}
     </main>
   )
 }

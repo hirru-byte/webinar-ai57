@@ -13,7 +13,7 @@ const montserrat = Montserrat({
 })
 
 export const metadata: Metadata = {
-  title: "ProGeekTech Webinar",
+  title: "AI57 Webinar",
   description: "Tham gia webinar chuyên nghiệp và học hỏi kinh nghiệm từ các chuyên gia hàng đầu.",
   generator: "v0.app",
   icons: {

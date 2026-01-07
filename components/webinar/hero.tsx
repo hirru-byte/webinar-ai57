@@ -26,6 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { useToast } from "@/hooks/use-toast"
 import WebinarBP from "../common/webinar-bp"
+import Image from "next/image"
 
 const formSchema = z.object({
   name: z.string().min(2, "Tên phải có ít nhất 2 ký tự"),
@@ -138,12 +139,13 @@ export default function Hero() {
   return (
     <section id="registration-form"  className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white py-20  relative overflow-hidden">
       <WebinarBP />
+      <Image src="/hero-bg.jpeg" alt="bg-webinar" width={1000} height={1000} className="absolute top-0 left-0 w-full h-full object-cover object-start opacity-10" />
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-400/20 rounded-full blur-3xl animate-float"></div>
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-white/10 rounded-full blur-3xl animate-float delay-500"></div>
       <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl animate-bounce-soft"></div>
       <div className="absolute top-1/4 right-1/4 w-24 h-24 border border-white/20 rounded-full animate-rotate-slow"></div>
 
-      <div className="max-w-8xl px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+      <div className="container mx-auto px-4 flex flex-col lg:flex-row gap-6 items-center relative z-10">
         {/* Left Side - Event Info */}
         <div className="space-y-8 animate-fadeInLeft">
           <div className="space-y-2">
@@ -184,7 +186,7 @@ export default function Hero() {
         </div>
 
         {/* Right Side - Registration Form */}
-        <div  className="bg-white/95 backdrop-blur-md border-l-4 border-blue-500 p-5 rounded-xl shadow-2xl animate-fadeInRight hover:shadow-blue-500/30 transition-all duration-500 hover-lift">
+        <div  className="min-w-lg bg-white/95 backdrop-blur-md border-l-4 border-blue-500 p-5 rounded-xl shadow-2xl animate-fadeInRight hover:shadow-blue-500/30 transition-all duration-500 hover-lift">
           <div className="text-center mb-4">
             <h3 className="text-blue-900 font-bold text-xl mb-1">Đăng Ký Tham Gia</h3>
             <p className="text-blue-600 text-xs">Điền thông tin để nhận vé miễn phí</p>
@@ -350,7 +352,7 @@ export default function Hero() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white mt-4 py-4 text-sm font-semibold shadow-lg hover:shadow-blue-500/50 transform hover:scale-[1.02] transition-all duration-300 animate-fadeInUp delay-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r cursor-pointer from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white mt-4 py-4 text-sm font-semibold shadow-lg hover:shadow-blue-500/50 transform hover:scale-[1.02] transition-all duration-300 animate-fadeInUp delay-900 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>

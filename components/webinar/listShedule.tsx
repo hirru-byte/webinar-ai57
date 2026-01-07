@@ -28,8 +28,8 @@ const webinarData: WebinarItem[] = [
     title: `Webinar: “SỰ THẬT VỀ THỊ TRƯỜNG LAO ĐỘNG THỜI AI: CẢNH BÁO NHÓM NGÀNH SẼ "BIẾN MẤT" VÀO NĂM 2030”`,
     isCompleted: false, 
     isComingSoon: false,
-    dateTime: "19:45 | Thứ Tư, Ngày 16 tháng 01 năm 2026",
-    format: "Trực tuyến qua ứng dụng Zoom",
+    dateTime: "20:00 | Thứ Sáu, Ngày 16 tháng 01 năm 2026",
+    format: "Webinar",
     speaker: "Thông tin đang được cập nhật",
     mainContent: {
       title: "Nội dung chính",
@@ -126,7 +126,7 @@ const ListSchedule = () => {
                 key={webinar.id}
                 onClick={() => setSelectedWebinar(webinar)}
                 className={cn(
-                  "w-full text-left p-4 rounded-lg border-2 transition-all duration-300",
+                  "w-full text-left p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer",
                   "hover:shadow-lg hover:scale-[1.02]",
                   selectedWebinar?.id === webinar.id
                     ? "bg-blue-600 border-blue-700 text-white shadow-lg"

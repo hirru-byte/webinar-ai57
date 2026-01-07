@@ -27,15 +27,16 @@ const eventTemplates: EventTemplate[] = [
     title: 'Webinar: “SỰ THẬT VỀ THỊ TRƯỜNG LAO ĐỘNG THỜI AI: CẢNH BÁO NHÓM NGÀNH SẼ "BIẾN MẤT" VÀO NĂM 2030”',
     type: 'Webinar',
     category: 'Technical',
-    description: 'Join us for an intensive weekend workshop covering advanced techniques and best practices. This hands-on session will help you master complex concepts and apply them in real-world scenarios.',
+    description: 'Sự thật về thị trường lao động thời AI: Cảnh báo nhóm ngành sẽ "biến mất" vào năm 2030',
     activities: [
-      'Activity 1: Advanced concept introduction',
-      'Activity 2: Hands-on practice with real examples',
-      'Activity 3: Group collaboration and problem-solving',
-      'Activity 4: Q&A and knowledge sharing session'
+      "Tổng quan tác động của AI lên ngành Marketing",
+        "Dẫn chứng thực tế về nguy cơ AI thay thế các vị trí Marketing (content, hình ảnh, video, ads…)",
+        "Phân tích Marketing sẽ “đổi dạng” như thế nào trong thời đại AI (công việc nào mất – công việc nào còn – kỹ năng nào bắt buộc)",
+        "Demo thực tế workflow Marketing khi có AI, so sánh trước và sau AI",
+        "Giải pháp thích nghi và liên hệ chương trình AI57 như một lộ trình AI phổ cập cho người làm Marketing",
     ],
-    preparation: 'Before attending, please review the provided materials and complete the pre-workshop assignments. Ensure you have a stable internet connection and a quiet workspace for optimal learning experience.',
-    instructor: 'Dr. Sarah Johnson',
+    preparation: 'Đăng ký tham gia và theo dõi webinar.',
+    instructor: 'Lê Thanh Hưng',
     isComingSoon: false,
   },
   {
@@ -155,7 +156,7 @@ export const generateMockData = (): DayItem[] => {
       dayItems.push({
         date,
         ...templateWithoutDate,
-        title: `${format(date, 'EEEE')} - ${template.title}`,
+        title: `${template.title}`,
         activities: [...template.activities]
       })
     } else {

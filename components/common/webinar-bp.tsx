@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { format, isToday } from 'date-fns'
-import { Calendar } from 'lucide-react'
+import { Calendar, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { DayItem, generateMockData } from '@/mocks/web-mock'
 import { vi } from 'date-fns/locale'
@@ -170,19 +171,107 @@ const WebinarBP = () => {
     }
   }, [])
 
+  // Scroll handlers
+  const handleScrollLeft = () => {
+    if (!scrollContainerRef.current) return
+    const scrollAmount = scrollContainerRef.current.clientWidth * 0.7
+    scrollContainerRef.current.scrollBy({
+      left: -scrollAmount,
+      behavior: 'smooth'
+    })
+  }
+
+  const handleScrollRight = () => {
+    if (!scrollContainerRef.current) return
+    const scrollAmount = scrollContainerRef.current.clientWidth * 0.7
+    scrollContainerRef.current.scrollBy({
+      left: scrollAmount,
+      behavior: 'smooth'
+    })
+  }
+
+  // Find and scroll to latest event
+  const scrollToLatestEvent = () => {
+    if (!scrollContainerRef.current || days.length === 0) return
+
+    // Find the last day with an event (has type and category)
+    let latestEventIndex = -1
+    for (let i = days.length - 1; i >= 0; i--) {
+      if (days[i].type !== '' && days[i].category !== '') {
+        latestEventIndex = i
+        break
+      }
+    }
+
+    if (latestEventIndex === -1) return
+
+    const latestEventElement = dayRefs.current[latestEventIndex]
+    if (!latestEventElement) return
+
+    const container = scrollContainerRef.current
+    const containerRect = container.getBoundingClientRect()
+    const elementRect = latestEventElement.getBoundingClientRect()
+    
+    // Calculate scroll position to center the element
+    const scrollPosition =
+      latestEventElement.offsetLeft -
+      containerRect.width / 2 +
+      elementRect.width / 2
+
+    container.scrollTo({
+      left: scrollPosition,
+      behavior: 'smooth'
+    })
+  }
+
   return (
     <div className="w-full pb-8 z-50 relative">
       <div className="mb-6 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl font-bold text-foreground mb-2 text-white">
-          Các sự kiện webinar trong {format(displayMonth, 'MMMM yyyy', { locale: vi })}
-        </h2>
-        <p className="text-muted-foreground text-sm">
-          Kéo ngang để xem tất cả các sự kiện trong {format(displayMonth, 'MMMM yyyy', { locale: vi })}
-        </p>
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <div className="flex items-center gap-4">
+            <h2 className="text-2xl lg:text-4xl font-bold text-pretty leading-tight text-white">
+              Các sự kiện webinar trong {format(displayMonth, 'MMMM yyyy', { locale: vi })}
+            </h2>
+            {/* Scroll buttons */}
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={handleScrollLeft}
+                variant="outline"
+                size="icon"
+                className=" bg-white/10 border-white/20 text-white hover:bg-white/80 h-10 w-10 cursor-pointer"
+                aria-label="Scroll left"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </Button>
+              <Button
+                onClick={handleScrollRight}
+                variant="outline"
+                size="icon"
+                className=" bg-white/10 border-white/20 text-white hover:bg-white/80 h-10 w-10 cursor-pointer"
+                aria-label="Scroll right"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+          {/* <div className="flex items-center gap-2">
+            <Button
+              onClick={scrollToLatestEvent}
+              variant="outline"
+              size="sm"
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+            >
+              <ArrowRight className="w-4 h-4 mr-2" />
+              Sự kiện mới nhất
+            </Button>
+          </div> */}
+        </div>
       </div>
 
       {/* Horizontal scrollable container */}
       <div className="relative">
+        
+
         {/* Fade overlays - left side */}
         <div className="absolute left-0 top-0 bottom-4 w-24 bg-gradient-to-r from-blue-900/50 to-transparent pointer-events-none z-10" />
         
@@ -233,7 +322,7 @@ const WebinarBP = () => {
                     className={cn(
                       'w-full h-32 rounded-lg border-2 transition-all duration-300',
                       'flex flex-col items-center justify-center p-4',
-                      'relative overflow-hidden',
+                      'relative ',
                       isDragging ? 'cursor-grabbing' : hasEvent ? 'cursor-pointer hover:shadow-lg hover:scale-105' : 'cursor-default',
                       // Color scheme:
                       // - Current day with event: vibrant cyan/blue gradient
@@ -243,7 +332,7 @@ const WebinarBP = () => {
                       isCurrentDay && hasEvent
                         ? 'bg-gradient-to-br from-cyan-500 via-blue-500 to-blue-600 border-blue-400 text-white shadow-2xl ring-4 ring-blue-400/50 ring-offset-2'
                         : isCurrentDay
-                          ? 'bg-gray-300 border-2 border-gray-400 text-gray-700 shadow-md'
+                          ? 'bg-gray-300 border-gray-400 text-gray-700 shadow-md'
                           : hasEvent
                             ? 'bg-gradient-to-br from-blue-200 to-blue-300 border-2 border-blue-400 hover:border-blue-500 text-card-foreground shadow-md'
                             : 'bg-gray-200 border-gray-300 text-gray-600'
@@ -251,7 +340,7 @@ const WebinarBP = () => {
                   >
                     {/* Current day indicator */}
                     {isCurrentDay && (
-                      <div className="absolute top-2 right-2 z-10">
+                      <div className="absolute -top-4 right-1/2 transform translate-x-1/2 z-40">
                         <span className={cn(
                           'text-xs font-bold px-2.5 py-1 rounded-full shadow-lg',
                           hasEvent 
@@ -297,7 +386,7 @@ const WebinarBP = () => {
                           <div className={cn(
                             'text-xs font-medium mb-1 px-2 py-1 rounded',
                             isCurrentDay 
-                              ? 'bg-white/30 text-white border border-white/20' 
+                              ? 'bg-white/30 text-white border-white/20' 
                               : 'bg-blue-500 text-white font-semibold'
                           )}>
                             {day.type}
@@ -357,7 +446,7 @@ const WebinarBP = () => {
                   {selectedDay.title}
                 </DialogTitle>
                 <DialogDescription>
-                  {format(selectedDay.date, 'EEEE, MMMM d, yyyy')}
+                  {format(selectedDay.date, 'EEEE, d MMMM, yyyy', { locale: vi })}
                 </DialogDescription>
               </DialogHeader>
 
@@ -380,15 +469,15 @@ const WebinarBP = () => {
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-cyan-100 text-cyan-700">
                         {selectedDay.type}
                       </span>
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700">
+                      {/* <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700">
                         {selectedDay.category}
-                      </span>
+                      </span> */}
                     </div>
                   )}
 
                   {/* Description */}
                   <div>
-                    <h3 className="text-lg font-semibold mb-2">Description</h3>
+                    <h3 className="text-lg font-semibold mb-2">Mô tả</h3>
                     <p className="text-muted-foreground leading-relaxed">
                       {selectedDay.description}
                     </p>
@@ -397,7 +486,7 @@ const WebinarBP = () => {
                   {/* Activities */}
                   {selectedDay.activities.length > 0 && (
                     <div>
-                      <h3 className="text-lg font-semibold mb-2">Activities</h3>
+                      <h3 className="text-lg font-semibold mb-2">Nội dung</h3>
                       <ul className="space-y-2">
                         {selectedDay.activities.map((activity, index) => (
                           <li key={index} className="flex items-start gap-2">
@@ -409,20 +498,12 @@ const WebinarBP = () => {
                     </div>
                   )}
 
-                  {/* Preparation */}
-                  {selectedDay.preparation && (
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">Preparation</h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        {selectedDay.preparation}
-                      </p>
-                    </div>
-                  )}
+                 
 
                   {/* Instructor */}
                   {selectedDay.instructor && (
                     <div className="pt-4 border-t">
-                      <h3 className="text-lg font-semibold mb-2">Instructor</h3>
+                      <h3 className="text-lg font-semibold mb-2">Giảng viên</h3>
                       <p className="text-foreground font-medium">
                         {selectedDay.instructor}
                       </p>
